@@ -1,4 +1,4 @@
 index:
   path: /
-  controller: App\Controller\IndexController::index
+  controller: App\Api\Controllers\IndexController::index
   methods: POST

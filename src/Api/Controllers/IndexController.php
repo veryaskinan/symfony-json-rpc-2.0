@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Api\Controllers;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +16,16 @@ class IndexController
 
         $this->checkForValidJson();
 
+        $content = json_decode($request->getContent());
+        if (is_array($content)) {
+            $rpcRequestsArray = [];
+            foreach ($content as $requestObjectData) {
+                array_push($rpcRequestsArray, new \App\Api\Requests\RpcRequest($requestObjectData));
+            }
+        } elseif (is_object($content)) {
+            $requestObject = $content;
+        }
+
         return new Response(
             $request->getContent(),
             Response::HTTP_OK,
@@ -30,17 +40,20 @@ class IndexController
         }
     }
 
-    private function validate()
-    {
-    }
-
-    function checkForValidJson()
+    private function checkForValidJson()
     {
         $content = $this->request->getContent();
         json_decode($content);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $exception = new \App\Exceptions\JsonParseException("Parse error");
+            $exception = new \App\Exceptions\JsonParseException();
             throw $exception;
         }
+    }
+
+    private function call($requestObjectData)
+    {
+        $rpcRequest = new \App\Api\Requests\RpcRequest($requestObjectData);
+        $rpcRequest->handle();
+        return $rpcRequest->result;
     }
 }

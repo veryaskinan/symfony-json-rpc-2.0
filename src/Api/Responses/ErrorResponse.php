@@ -1,16 +1,16 @@
 <?php
 
 
-namespace App\Responses;
+namespace App\Api\Responses;
 
 
-final class ErrorJsonParseResponse extends ErrorResponse
+class ErrorResponse extends Response
 {
     public function __construct(int $status = 200, array $headers = [], bool $json = false)
     {
         parent::__construct($status, $headers, $json);
-        $this->contentObject->error->code = -32700;
-        $this->contentObject->error->message = "Parse error";
+        $this->contentObject->error = new \stdClass();
+        $this->contentObject->id = null;
         $this->setContent(json_encode($this->contentObject));
     }
 }
