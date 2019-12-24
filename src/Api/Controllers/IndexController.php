@@ -4,13 +4,16 @@ namespace App\Api\Controllers;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use \Symfony\Component\HttpFoundation\JsonResponse;
+use App\Api\Router;
+
 
 class IndexController
 {
     private $request;
     private $response;
 
-    public function index(Request $request)
+    public function index(Request $request, Router $router)
     {
         $this->request = $request;
 
@@ -18,19 +21,20 @@ class IndexController
 
         $content = json_decode($request->getContent());
         if (is_array($content)) {
-            $rpcRequestsArray = [];
+            $rpcResponsesArray = [];
             foreach ($content as $requestObjectData) {
-                array_push($rpcRequestsArray, new \App\Api\Requests\RpcRequest($requestObjectData));
+                $rpcRequest = new \App\Api\Requests\RpcRequest($requestObjectData, $router);
+                $rpcResponse = new \App\Api\Responses\RpcResponse(
+                    $rpcRequest->jsonrpc, $rpcRequest->call(), $rpcRequest->getError(), $rpcRequest->id
+                );
+                array_push($rpcResponsesArray, $rpcResponse);
             }
+            $this->response = new JsonResponse($rpcResponsesArray);
         } elseif (is_object($content)) {
             $requestObject = $content;
         }
 
-        return new Response(
-            $request->getContent(),
-            Response::HTTP_OK,
-            ['content-type' => 'application/json']
-        );
+        return $this->response;
     }
 
     private function getJson() {

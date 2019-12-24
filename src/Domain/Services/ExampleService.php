@@ -6,7 +6,8 @@ namespace App\Domain\Services;
 
 class ExampleService
 {
-    static function exampleMethod() {
-
+    static function exampleMethod()
+    {
+        return 'function result';
     }
 }

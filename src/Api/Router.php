@@ -12,6 +12,9 @@ class Router
 
     function getRoute(string $method)
     {
-        $route
+        $fullMethodExploded = explode("::", $this->routes[$method]);
+        $namespace = $fullMethodExploded[0];
+        $method = $fullMethodExploded[1];
+        return new Route($namespace, $method);
     }
 }

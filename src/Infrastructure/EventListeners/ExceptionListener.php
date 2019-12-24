@@ -2,10 +2,7 @@
 
 namespace App\Infrastructure\EventListeners;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Psr\Log\LoggerInterface;
 
 class ExceptionListener
 {
@@ -18,7 +15,7 @@ class ExceptionListener
 
         if ($exception instanceof \App\Exceptions\JsonParseException)
         {
-            $event->setResponse(new \App\Responses\ErrorJsonParseResponse());
+            $event->setResponse(new \App\Responses\AppResponses\ErrorJsonParseResponse());
         }
     }
 }

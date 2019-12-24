@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Api\Responses;
+namespace App\Api\Responses\AppResponses;
 
 
 final class ErrorJsonParseResponse extends ErrorResponse
